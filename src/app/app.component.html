@@ -2,8 +2,7 @@
   <button>
     <label>
       <span class="mdi mdi-file-export"> </span>
-      <small>Import</small>
-      <input hidden type="file" (change)="onFileChange($event)" multiple="false">
+      <input type="file" (change)="onFileChange($event)" multiple="false">
     </label>
   </button>
 </div>
@@ -17,7 +16,7 @@
     <th>Grado</th>
     <th>Grupo</th>
     <th>Calificacion</th>
-    <th>Clave</th>
+    <th>Clave de Usuario</th>
   </tr>
   <tr class="tbody" *ngFor="let alumno of importAlumno; let odd = odd" [ngClass]="{'odd': odd}">
     <td>{{alumno?.nombre}}</td>
