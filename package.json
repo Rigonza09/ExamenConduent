@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "~12.1.0-",
     "@angular/router": "~12.1.0-",
     "faker": "^5.5.3",
+    "moment": "^2.29.1",
     "rxjs": "~6.6.0",
     "sweetalert2": "^11.0.20",
     "tslib": "^2.2.0",
