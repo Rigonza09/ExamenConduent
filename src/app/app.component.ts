@@ -1,7 +1,5 @@
-import { Component } from '@angular/core';
-import Swal from 'sweetalert2';
+import { Component, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
-import * as faker from 'faker';
 import * as moment from 'moment';
 
 @Component({
@@ -11,15 +9,21 @@ import * as moment from 'moment';
 })
 export class AppComponent {
   workbook:any = null;
-
   importAlumno: Alumno[] = [];
+
+
+  saleData:any[] = [];
 
   constructor() {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  resetInputFile(){
+    
   }
 
   onFileChange(evt: any) {
+    this.saleData = [];
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) throw new Error('Cannot use multiple files');
 
@@ -52,6 +56,8 @@ export class AppComponent {
         }
 
         this.createClaveUsuario(obj);
+        this.saleData.push({name:obj.nombre,value: obj.calificacion});
+        this.saleData = [...this.saleData];
         return <Alumno>obj;
       })
 
@@ -76,7 +82,6 @@ export class AppComponent {
   createClaveUsuario(obj: Alumno):void{
     var clave = "";
     var fecha_nacimiento = obj.fecha_nacimiento;
-    
 
     clave += obj.nombre.substring(0,2);
     clave += obj.apellido_materno.substring(0,2);

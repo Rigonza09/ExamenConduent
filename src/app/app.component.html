@@ -1,31 +1,57 @@
-<div class="tools">
-  <button>
-    <label>
-      <span class="mdi mdi-file-export"> </span>
-      <input type="file" (change)="onFileChange($event)" multiple="false">
-    </label>
-  </button>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="tools">
+      <button>
+        <label>
+          <span class="mdi mdi-file-export"> </span>
+          <input type="file" (change)="onFileChange($event)" multiple="false">
+        </label>
+      </button>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <button (click)='resetInputFile()' class="btn btn-success">Reset</button>
+  </div>
 </div>
+<br>
+<div class="row">
+  <div class="col-md-6">
+    <table id="contactJs" class="table-contact">
+      <tr class="thead">
+        <th>Nombre</th>
+        <th>Apellido materno</th>
+        <th>Apellido paterno</th>
+        <th>Fecha de nacimiento</th>
+        <th>Grado</th>
+        <th>Grupo</th>
+        <th>Calificacion</th>
+        <th>Clave de Usuario</th>
+      </tr>
+      <tr class="tbody" *ngFor="let alumno of importAlumno;">
+        <td>{{alumno?.nombre}}</td>
+        <td>{{alumno?.apellido_materno}}</td>
+        <td>{{alumno?.apellido_paterno}}</td>
+        <td>{{alumno?.fecha_nacimiento}}</td>
+        <td>{{alumno?.grado}}</td>
+        <td>{{alumno?.grupo}}</td>
+        <td>{{alumno?.calificacion}}</td>
+        <td>{{alumno?.clave}}</td>
+      </tr>
+    </table>
+  </div>
 
-<table id="contactJs" class="table-contact">
-  <tr class="thead">
-    <th>Nombre</th>
-    <th>Apellido materno</th>
-    <th>Apellido paterno</th>
-    <th>Fecha de nacimiento</th>
-    <th>Grado</th>
-    <th>Grupo</th>
-    <th>Calificacion</th>
-    <th>Clave de Usuario</th>
-  </tr>
-  <tr class="tbody" *ngFor="let alumno of importAlumno; let odd = odd" [ngClass]="{'odd': odd}">
-    <td>{{alumno?.nombre}}</td>
-    <td>{{alumno?.apellido_materno}}</td>
-    <td>{{alumno?.apellido_paterno}}</td>
-    <td>{{alumno?.fecha_nacimiento}}</td>
-    <td>{{alumno?.grado}}</td>
-    <td>{{alumno?.grupo}}</td>
-    <td>{{alumno?.calificacion}}</td>
-    <td>{{alumno?.clave}}</td>
-  </tr>
-</table>
+  <div class="col-sm-6">
+    <ngx-charts-bar-vertical 
+        [results]="saleData"
+        [xAxisLabel]="'Products'"
+        [legendTitle]="'Product Sale Chart'"
+        [yAxisLabel]="'Sale'"
+        [legend]="true"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+        [gradient]="true">
+    </ngx-charts-bar-vertical>
+  </div>
+</div>
