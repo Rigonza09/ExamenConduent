@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-root',
@@ -11,22 +12,89 @@ export class AppComponent {
   workbook:any = null;
   importAlumno: Alumno[] = [];
   promedio: number = 0;
-  alumno_mejor: string = "";
-  alumno_peor: string = "";
-  saleData:any[] = [];
-
-  constructor() {}
+  cifrado: number = 3;
+  alumno_mejor: string = "Indefinido";
+  alumno_peor: string = "Indefinido";
+  graphData:any[] = [];
+  showGraph:boolean = false;
 
   ngOnInit(): void {}
 
-  resetInputFile(){
+  constructor() {}
+
+  resetVariables(){
+    this.importAlumno = [];
+    this.promedio = 0;
+    this.cifrado = 3;
+    this.alumno_mejor = "Indefinido";
+    this.alumno_peor = "Indefinido";
+    this.graphData = [];
+    this.showGraph = false;
+  }
+
+  actualizaCifrado(evt: any){
+    if(isNaN(evt.target.value)){
+      this.cifrado = 0;
+    } else {
+      this.cifrado = evt.target.value;
+    }
+
+    if(this.importAlumno.length > 0){
+      for (let index = 0; index < this.importAlumno.length; index++) {
+        let element = this.importAlumno[index];
+        this.createClaveUsuario(element);
+        this.importAlumno[index] = element;
+      }
+    }
+  }
+
+  identificaAlumnos(){
+    let minimo:number = 0;
+    let minimo_alumno:string = "Indefinido";
+    let maximo:number = 0;
+    let maximo_alumno:string = "Indefinido";
+    let inicio = true;
+    let suma_calif:number = 0;
     
+    for (let index = 0; index < this.importAlumno.length; index++) {
+      if(inicio){
+        inicio = false;
+        minimo = this.importAlumno[index].calificacion;
+        maximo = this.importAlumno[index].calificacion;
+        minimo_alumno = this.importAlumno[index].nombre + " " + this.importAlumno[index].apellido_paterno + " " + this.importAlumno[index].apellido_materno;
+        maximo_alumno = this.importAlumno[index].nombre + " " + this.importAlumno[index].apellido_paterno + " " + this.importAlumno[index].apellido_materno;
+      }
+      
+      if(this.importAlumno[index].calificacion < minimo){
+        minimo = this.importAlumno[index].calificacion;
+        minimo_alumno = this.importAlumno[index].nombre + " " + this.importAlumno[index].apellido_paterno + " " + this.importAlumno[index].apellido_materno;
+      }
+
+      if(this.importAlumno[index].calificacion > maximo){
+        maximo = this.importAlumno[index].calificacion;
+        maximo_alumno = this.importAlumno[index].nombre + " " + this.importAlumno[index].apellido_paterno + " " + this.importAlumno[index].apellido_materno;
+      }
+
+      suma_calif += Number(this.importAlumno[index].calificacion);
+    }
+
+
+    this.promedio = suma_calif/this.importAlumno.length;
+    this.alumno_mejor = maximo_alumno;
+    this.alumno_peor = minimo_alumno;
   }
 
   onFileChange(evt: any) {
-    this.saleData = [];
+    this.resetVariables();
     const target: DataTransfer = <DataTransfer>(evt.target);
-    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    if (target.files.length > 1){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Selecciona un solo archivo.'
+      })
+      throw new Error('Cannot use multiple files');
+    };
 
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
@@ -45,25 +113,18 @@ export class AppComponent {
           obj[k] = arr[i];
         }
 
-        if(isNaN(obj.fecha_nacimiento)){
-          const arreglo_fecha = obj.fecha_nacimiento.split("/");
-          fecha_nac = arreglo_fecha[2]+"-"+arreglo_fecha[1]+"-"+arreglo_fecha[0];
-
-          obj.fecha_nacimiento = fecha_nac;
-        } else {
-          var utc_days  = (obj.fecha_nacimiento - 25569);
-          var utc_value = utc_days * 86400;
-          obj.fecha_nacimiento = moment(utc_value * 1000).utc().format("YYYY-MM-DD");
-        }
-
         this.createClaveUsuario(obj);
-        this.saleData.push({name:obj.nombre,value: obj.calificacion});
-        this.saleData = [...this.saleData];
+        this.graphData.push({name:obj.nombre,value: obj.calificacion});
+        this.graphData = [...this.graphData];
         return <Alumno>obj;
       })
 
     };
     reader.readAsBinaryString(target.files[0]);
+    reader.onloadend = (e: any) => {
+      this.showGraph = true;
+      this.identificaAlumnos();
+    };
   }
 
   public importFromFile(bstr: string): XLSX.AOA2SheetOpts {
@@ -80,13 +141,25 @@ export class AppComponent {
     return data;
   }
 
-  createClaveUsuario(obj: Alumno):void{
+  createClaveUsuario(obj: any):void{
     var clave = "";
+
+    if(isNaN(obj.fecha_nacimiento)){
+      const arreglo_fecha = obj.fecha_nacimiento.split("/");
+      const fecha_nac = arreglo_fecha[2]+"-"+arreglo_fecha[1]+"-"+arreglo_fecha[0];
+
+      obj.fecha_nacimiento = fecha_nac;
+    } else {
+      var utc_days  = (obj.fecha_nacimiento - 25569);
+      var utc_value = utc_days * 86400;
+      obj.fecha_nacimiento = moment(utc_value * 1000).utc().format("YYYY-MM-DD");
+    }
+
     var fecha_nacimiento = obj.fecha_nacimiento;
 
     clave += obj.nombre.substring(0,2);
     clave += obj.apellido_materno.substring(0,2);
-    clave = cifrarString(clave,3);
+    clave = cifrarString(clave,this.cifrado);
 
     var timeDiff = Math.abs(Date.now() - <any>new Date(fecha_nacimiento));
     var edad = Math.floor((timeDiff / (1000 * 3600 * 24))/365);
@@ -106,14 +179,35 @@ function cifrarString(text:string, recorrer:number, cortar?:number) {
   }
 
   for (let index = 0; index < contador; index++) {
-    const element = text[index];
-    var cipher_index = abecedario.indexOf(element) - recorrer;
-    if(cipher_index < 0){
-      cipher_index = abecedario.length + cipher_index;
+    const element:any = text[index];
+    
+    if(!isNaN(element)){
+      new_string += element;
+      continue;
     }
-    new_string += abecedario[cipher_index];
-  }
 
+    if(abecedario.includes(element)){
+      var cipher_index = 0;
+      if(recorrer >= 0){
+        cipher_index = abecedario.indexOf(element) - recorrer;
+        if(cipher_index < 0){
+          while(cipher_index < 0){
+            cipher_index = abecedario.length + cipher_index;
+          }
+        }
+        new_string += abecedario[cipher_index];
+      }
+      else{
+        cipher_index = abecedario.indexOf(element) - recorrer;
+        if(cipher_index > (abecedario.length-1)){
+          while(cipher_index > (abecedario.length-1)){
+            cipher_index = cipher_index - abecedario.length;
+          }
+        }
+        new_string += abecedario[cipher_index];
+      }
+    }
+  }
   return new_string;
 }
 
@@ -124,6 +218,6 @@ export class Alumno {
   fecha_nacimiento: string = "";
   grado: number = 0;
   grupo: string = "";
-  calificacion: string = "";
+  calificacion: number = 0;
   clave: string = "";
 }

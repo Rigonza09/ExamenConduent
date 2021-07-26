@@ -1,57 +1,90 @@
-<div class="row">
-  <div class="col-sm-6">
-    <div class="tools">
-      <button>
-        <label>
-          <span class="mdi mdi-file-export"> </span>
-          <input type="file" (change)="onFileChange($event)" multiple="false">
-        </label>
-      </button>
+<div class="content">
+  <div class="row">
+    <div class="col-sm-6">
+      <input type="file" class="form-control-file" multiple="false" id="inputFile" (change)="onFileChange($event)">
+    </div>
+    <div class="col-sm-4">
     </div>
   </div>
-  <div class="col-sm-6">
-    <button (click)='resetInputFile()' class="btn btn-success">Reset</button>
-  </div>
-</div>
-<br>
-<div class="row">
-  <div class="col-md-6">
-    <table id="contactJs" class="table-contact">
-      <tr class="thead">
-        <th>Nombre</th>
-        <th>Apellido materno</th>
-        <th>Apellido paterno</th>
-        <th>Fecha de nacimiento</th>
-        <th>Grado</th>
-        <th>Grupo</th>
-        <th>Calificacion</th>
-        <th>Clave de Usuario</th>
-      </tr>
-      <tr class="tbody" *ngFor="let alumno of importAlumno;">
-        <td>{{alumno?.nombre}}</td>
-        <td>{{alumno?.apellido_materno}}</td>
-        <td>{{alumno?.apellido_paterno}}</td>
-        <td>{{alumno?.fecha_nacimiento}}</td>
-        <td>{{alumno?.grado}}</td>
-        <td>{{alumno?.grupo}}</td>
-        <td>{{alumno?.calificacion}}</td>
-        <td>{{alumno?.clave}}</td>
-      </tr>
-    </table>
-  </div>
 
-  <div class="col-sm-6">
-    <ngx-charts-bar-vertical 
-        [results]="saleData"
-        [xAxisLabel]="'Alumnos'"
-        [legendTitle]="'Calificaciones'"
-        [yAxisLabel]="'Calificación'"
-        [legend]="true"
-        [showXAxisLabel]="true"
-        [showYAxisLabel]="true"
-        [xAxis]="true"
-        [yAxis]="true"
-        [gradient]="true">
-    </ngx-charts-bar-vertical>
+  <div class="row">
+    <div class="col-md-6">
+      <div>
+        <table class="table table-striped table-bordered table-hover table-sm">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Apellido Materno</th>
+              <th>Apellido Paterno</th>
+              <th>Fecha de Nacimiento</th>
+              <th>Grado</th>
+              <th>Grupo</th>
+              <th>Calificacion</th>
+              <th>Clave Usuario</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let alumno of importAlumno;">
+              <td>{{alumno?.nombre}}</td>
+              <td>{{alumno?.apellido_materno}}</td>
+              <td>{{alumno?.apellido_paterno}}</td>
+              <td>{{alumno?.fecha_nacimiento}}</td>
+              <td>{{alumno?.grado}}</td>
+              <td>{{alumno?.grupo}}</td>
+              <td>{{alumno?.calificacion}}</td>
+              <td>{{alumno?.clave}}</td>
+            </tr>
+            <tr *ngIf="!importAlumno?.length">
+              <td colspan="8" style="text-align: center;"> No hay un archivo seleccionado.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <label for="opcion_cifrado">Cantidad de letras desplazadas para clave</label>
+            <input class="form-control" type="number" id="opcion_cifrado" (change)="actualizaCifrado($event)" value="{{cifrado}}">
+          </div>
+          <div class="col-sm-12">
+            <label for="promedio">Promedio</label>
+            <input disabled class="form-control" id="promedio" type="text" value="{{promedio}}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="alumno_mejor">Mejor calificación</label>
+            <input disabled class="form-control" id="alumno_mejor" type="text" value="{{alumno_mejor}}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="alumno_peor">Peor calificación</label>
+            <input disabled class="form-control" id="alumno_peor" type="text" value="{{alumno_peor}}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <br>
+            <div *ngIf="showGraph" class="chart-contenedor">
+              <ngx-charts-bar-vertical 
+                  [results]="graphData"
+                  [xAxisLabel]="'Alumnos'"
+                  [legendTitle]="'Calificaciones'"
+                  [yAxisLabel]="'Calificación'"
+                  [legend]="true"
+                  [showXAxisLabel]="true"
+                  [showYAxisLabel]="true"
+                  [xAxis]="true"
+                  [yAxis]="true"
+                  [gradient]="true">
+              </ngx-charts-bar-vertical>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
