@@ -10,8 +10,9 @@ import * as moment from 'moment';
 export class AppComponent {
   workbook:any = null;
   importAlumno: Alumno[] = [];
-
-
+  promedio: number = 0;
+  alumno_mejor: string = "";
+  alumno_peor: string = "";
   saleData:any[] = [];
 
   constructor() {}
