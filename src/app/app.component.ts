@@ -75,7 +75,6 @@ export class AppComponent {
 
   createClaveUsuario(obj: Alumno):void{
     var clave = "";
-    var arr_fecha = [];
     var fecha_nacimiento = obj.fecha_nacimiento;
     
 
