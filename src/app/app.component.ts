@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
+import { HttpClient } from '@angular/common/http';
+import { LegendPosition } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-root',
@@ -17,19 +19,49 @@ export class AppComponent {
   alumno_peor: string = "Indefinido";
   graphData:any[] = [];
   showGraph:boolean = false;
+  objClima:any = {
+    clima: null,
+    temperatura: null,
+    sensacion_termica: null,
+    temp_max: null,
+    presion: null,
+    humedad: null
+  };
+  clima:string = "";
+  temperatura:number = 0;
+  sensacion_termica: number = 0;
+  temp_max: any;
+  presion: any;
+  humedad: any;
+  below = LegendPosition.Below;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.http.get<any>('https://api.openweathermap.org/data/2.5/weather?q=Hermosillo&appid=b8fb70907a31adc0fdefe85eddace505&lang=es&units=metric').subscribe(data => {
+        this.objClima = {
+          clima: data.weather[0].description,
+          temperatura: data.main.temp,
+          sensacion_termica: data.main.feels_like,
+          temp_max: data.temp_max,
+          presion: data.pressure,
+          humedad: data.humidity,
+          ciudad: data.name,
+          pais: data.sys.country
+        };
+    })
+  }
 
-  constructor() {}
+  constructor(
+    private http: HttpClient
+  ) {}
 
   resetVariables(){
+    this.showGraph = false;
     this.importAlumno = [];
+    this.graphData = [];
     this.promedio = 0;
     this.cifrado = 3;
     this.alumno_mejor = "Indefinido";
     this.alumno_peor = "Indefinido";
-    this.graphData = [];
-    this.showGraph = false;
   }
 
   actualizaCifrado(evt: any){

@@ -1,0 +1,6 @@
+.tableFixHead          { overflow: auto; height: 530px; }
+.tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
+
+table  { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 8px 16px; }
+th     { background:#eee; }
