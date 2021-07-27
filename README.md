@@ -3,16 +3,16 @@ Exámen práctico de Conduent.
 Para este proyecto necesitamos instalar NodeJS desde su página web -> https://nodejs.org/es/download/
 Una vez que NodeJS esté instalado, necesitamos abrir una nueva terminal y ejecutar el siguiente código para instalar Angular y así acceder al proyecto.
 
-npm install -g @angular/cli
+#npm install -g @angular/cli
 
 Una vez instalado, debemos descargar el repositorio y guardarlo en una dirección conocida.
 Tenemos que irnos a la terminal y movernos a la carpeta que acabamos de descargar, una vez ahi debemos instalar las dependencias del proyecto con el siguiente comando.
 
-npm install
+#npm install
 
 Cuando terminen de instalar todas las dependencias, en el mismo terminal podemos utilizar el comando
 
-ng serve --open
+#ng serve --open
 
 Este comando puede llegar a tardar un tiempo en iniciar debido a que construye el proyecto y lo monta en un servidor local.
 Gracias a la opcion "--open" se abrirá una pestaña de tu navegador con el proyecto.
