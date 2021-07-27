@@ -1,6 +1,7 @@
 # Exámen práctico de Conduent.
 
 Para este proyecto necesitamos instalar NodeJS desde su página web -> https://nodejs.org/es/download/
+
 Una vez que NodeJS esté instalado, necesitamos abrir una nueva terminal y ejecutar el siguiente código para instalar Angular y así acceder al proyecto.
 
 - npm install -g @angular/cli
